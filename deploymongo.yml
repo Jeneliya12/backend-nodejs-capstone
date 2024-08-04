@@ -1,32 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb-deployment
+  name: secondchanceapp
+  labels:
+    app: secondchanceapp
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: mongodb
+      app: secondchanceapp
   template:
     metadata:
       labels:
-        app: mongodb
+        app: secondchanceapp
     spec:
       containers:
-      - name: mongodb
-        image: mongo:latest
+      - name: secondchanceapp-container
+        image: <the-name-of-your-image>
         ports:
-        - containerPort: 27017
+        - containerPort: 3060
+      imagePullSecrets:
+      - name: icr
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-service
+  name: secondchance-app-service
 spec:
   type: NodePort
   ports:
-  - port: 27017
-    targetPort: 27017
-    nodePort: 30007
+  - port: 80
+    targetPort: 3060
+    protocol: TCP
   selector:
-    app: mongodb
+    app: secondchanceapp
